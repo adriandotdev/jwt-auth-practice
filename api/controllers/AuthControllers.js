@@ -18,14 +18,14 @@ const LoginController = async (req, res) => {
 
     const signedJWT = jwt.sign(user.username, process.env.JWT_SECRET_KEY);
 
-    res.cookie('token', signedJWT, {
-        httpOnly: true,
-        secure: true,
+    res.cookie('auth-token', signedJWT, {
+        sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000, // Expires in 7 days
+        httpOnly: true, // Cookie accessible only via HTTP, not JavaScript
+        secure: true, // Cookie sent over HTTPS only
     });
 
-    console.log("LOGGED IN");
-    res.status(200).send({ message: "Logged In" });
+    res.status(200).send({ message: "Logged In", user });
 }
 
 const RegisterController = async (req, res) => {
@@ -44,4 +44,9 @@ const RegisterController = async (req, res) => {
     return res.json({ givenName, middleName, lastName, username, password: hashedPassword });
 }
 
-module.exports = { LoginController, RegisterController }
+const LogoutController = async (req, res) => {
+
+    res.clearCookie('auth-token');
+    res.status(200).json({ message: 'Logged out successfully' })
+}
+module.exports = { LoginController, RegisterController, LogoutController }
