@@ -72,7 +72,6 @@ io.on('connection', (socket) => {
         await newMessage.save();
         const messages = await Message.find();
 
-        console.log(messages);
         socket.to(data.to).emit('receive_messages', messages);
         socket.emit('receive_messages', messages);
     });

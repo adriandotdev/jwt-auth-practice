@@ -16,7 +16,7 @@ const LoginController = async (req, res) => {
 
     if (!isPasswordMatched) return res.status(400).json({ message: 'Incorrect password' });
 
-    const signedJWT = jwt.sign(user.username, process.env.JWT_SECRET_KEY);
+    const signedJWT = jwt.sign(user.id, process.env.JWT_SECRET_KEY);
 
     res.cookie('auth-token', signedJWT, {
         sameSite: 'strict',
@@ -49,4 +49,16 @@ const LogoutController = async (req, res) => {
     res.clearCookie('auth-token');
     res.status(200).json({ message: 'Logged out successfully' })
 }
-module.exports = { LoginController, RegisterController, LogoutController }
+
+const VerifyController = async (req, res) => {
+
+    if (req.isValid) {
+
+        const existingUser = await User.findOne({ _id: req.id });
+        return res.json({ user: existingUser });
+    }
+
+    return res.status(404).json({ error: 'Not Authenticated' })
+}
+
+module.exports = { LoginController, RegisterController, LogoutController, VerifyController }

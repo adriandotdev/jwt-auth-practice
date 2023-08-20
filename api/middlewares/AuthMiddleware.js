@@ -8,6 +8,9 @@ const LoginMiddleware = (req, res, next) => {
         const isValid = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
         if (isValid) {
+
+            req.isValid = true;
+            req.id = jwt.decode(token);
             next();
         }
     }
