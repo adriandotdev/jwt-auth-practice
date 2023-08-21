@@ -42,11 +42,6 @@ mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology
     });
 });
 
-app.get('/', (req, res) => {
-
-    res.send("Hello, world!");
-});
-
 app.use(AuthRoute);
 
 app.use(LoginMiddleware);
